@@ -32,4 +32,5 @@ void draw(int width, int length, int x, int y, int fruitX, int fruitY, int& scor
 	cout << endl;
 
 	cout << "Score: " << score;
+	system("cls");
 }

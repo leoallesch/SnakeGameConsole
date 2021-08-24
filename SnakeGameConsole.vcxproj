@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="draw.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="setup.cpp" />
     <ClCompile Include="SnakeGameConsole.cpp" />
   </ItemGroup>
