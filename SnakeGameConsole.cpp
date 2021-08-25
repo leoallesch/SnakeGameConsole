@@ -12,8 +12,8 @@ const int width = 75;
 const int length = 25;
 int x, y, fruitX, fruitY;
 
-enum direction { stop = 0, left, right, up, down };
-direction dir;
+enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
+eDirection dir;
 
 void setup() {
 	snake = true;
@@ -61,15 +61,81 @@ void draw() {
 	}
 	cout << endl;
 
-	cout << "Score: " << score;
+	cout << "Score: " << score << endl;
 }
 
 void input() {
-
+	if (_kbhit()) {
+		switch (_getch()) {
+			case 'w':
+				if (dir != DOWN) {
+					dir = UP;
+				}
+				break;
+			case 'a':
+				if (dir != RIGHT) {
+					dir = LEFT;
+				}
+				break;
+			case 's':
+				if (dir != UP) {
+					dir = DOWN;
+				}
+				break;
+			case 'd':
+				if (dir != LEFT) {
+					dir = RIGHT;
+				}
+				break;
+			case 'x':
+				dir = STOP;
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void logic() {
+	switch (dir) {
+		case UP:
+			y--;
+			break;
+		case DOWN:
+			y++;
+			break;
+		case LEFT:
+			x--;
+			break;
+		case RIGHT:
+			x++;
+			break;
+		case STOP:
+			//snake = false;
+			break;
+		default:
+			break;
+	}
 
+	if (x < 0 || x > width-1) {
+		snake = false;
+	}
+	else if (y < 0 || y > length-1) {
+		snake = false;
+	}
+
+	if (x == fruitX && y == fruitY) {
+		score++;
+		fruitX = rand() % (width - 1) + 1;
+		fruitY = rand() % (length - 1) + 1;
+
+		while (fruitX == x) {
+			fruitX = rand() % (width - 1) + 1;
+		}
+		while (fruitY == y) {
+			fruitY = rand() % (length - 1) + 1;
+		}
+	}
 }
 
 int main()
@@ -77,6 +143,8 @@ int main()
 	setup();
 	while (snake == true) {
 		draw();
+		input();
+		logic();
 	}
 	
 	return 0;
