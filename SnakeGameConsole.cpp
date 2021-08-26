@@ -140,8 +140,8 @@ void logic() {
 		score++;
 		fruitX = rand() % (width - 1) + 1;
 		fruitY = rand() % (length - 1) + 1;
-		tailX.push_back(tailX[tailX.size()]);
-		tailY.push_back(tailY[tailY.size()]);
+		tailX.push_back(tailX[tailX.size()-1]);
+		tailY.push_back(tailY[tailY.size()-1]);
 
 		while (fruitX == x) {
 			fruitX = rand() % (width - 1) + 1;
@@ -152,7 +152,7 @@ void logic() {
 	}
 	
 	tailX[0] = x;
-	tailY[0] = x;
+	tailY[0] = y;
 
 	if (score > 0) {
 		for (int i = (tailX.size()-1); i > 0; i--) {
@@ -174,8 +174,8 @@ int main()
 		logic();
 	}
 	system("cls");
-	for (int i = 0; i < 10; i++) {
-		cout << i << endl;
+	for (int i = 0; i < (tailX.size()-1); i++) {
+		cout << tailX[i] << endl;
 	}
 	
 	return 0;
