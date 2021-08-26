@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <conio.h>
+#include <vector>
 
 using namespace std;
 
@@ -11,6 +12,9 @@ int score;
 const int width = 75;
 const int length = 25;
 int x, y, fruitX, fruitY;
+int prevX, prevY;
+vector <int> tailX;
+vector <int> tailY;
 
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 eDirection dir;
@@ -21,8 +25,13 @@ void setup() {
 
 	x = width/2;
 	y = length/2;
+
+	tailX.push_back(x);
+	tailY.push_back(y);
+
 	fruitX = rand() % (width - 1) + 1;
 	fruitY = rand() % (length - 1) + 1;
+
 
 	while (fruitX == x) {
 		fruitX = rand() % (width - 1) + 1;
@@ -48,7 +57,10 @@ void draw() {
 				cout << "O";
 			}
 			else if (j == fruitX && i == fruitY) {
-				cout << "P";
+				cout << "F";
+			}
+			else if (j == prevX && i == prevY) {
+				cout << "o";
 			}
 			else {
 				cout << " ";
@@ -128,6 +140,8 @@ void logic() {
 		score++;
 		fruitX = rand() % (width - 1) + 1;
 		fruitY = rand() % (length - 1) + 1;
+		tailX.push_back(tailX[tailX.size()]);
+		tailY.push_back(tailY[tailY.size()]);
 
 		while (fruitX == x) {
 			fruitX = rand() % (width - 1) + 1;
@@ -136,6 +150,19 @@ void logic() {
 			fruitY = rand() % (length - 1) + 1;
 		}
 	}
+	
+	tailX[0] = x;
+	tailY[0] = x;
+
+	if (score > 0) {
+		for (int i = (tailX.size()-1); i > 0; i--) {
+			tailX[i] = tailX[i - 1];
+		}
+		for (int i = (tailY.size()-1); i > 0; i--) {
+			tailY[i] = tailY[i - 1];
+		}
+	}
+
 }
 
 int main()
@@ -145,6 +172,10 @@ int main()
 		draw();
 		input();
 		logic();
+	}
+	system("cls");
+	for (int i = 0; i < 10; i++) {
+		cout << i << endl;
 	}
 	
 	return 0;
