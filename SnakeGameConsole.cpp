@@ -23,11 +23,14 @@ void setup() {
 	snake = true;
 	score = 0;
 
-	x = width/2;
-	y = length/2;
+	x = width / 2;
+	y = length / 2;
 
-	tailX.push_back(prevX);
-	tailY.push_back(prevY);
+	tailX.clear();
+	tailY.clear();
+
+	tailX.push_back(x);
+	tailY.push_back(y);
 
 	fruitX = rand() % (width - 1) + 1;
 	fruitY = rand() % (length - 1) + 1;
@@ -42,26 +45,35 @@ void setup() {
 
 }
 
+bool checkTail(int i, int j) {
+	bool check = false;
+	if (tailX.size() > 1) {
+		for (int z = 1; z < tailX.size(); z++) {
+			if (tailX[z] == i && tailY[z] == j) {
+				check = true;
+			}
+		}
+	}
+	return check;
+}
+
 void draw() {
 	system("cls");
+	//top border
 	for (int i = 0; i < width; i++) {
 		cout << "*";
 	}
 	cout << endl;
 	for (int i = 0; i < length; i++) {
 		for (int j = 0; j < width; j++) {
-			if (j == x && i == y) {
-				cout << "O";
-			}
-			if (score > 0) {
-				for (int z = tailX.size() - 1; z > 0; z--) {
-					if (j == tailX[z] && i == tailY[z]) {
-						cout << 'o';
-					}
-				}
-			}
 			if (j == 0 || j == (width - 1)) {
 				cout << "*";
+			}
+			else if (j == x && i == y) {
+				cout << "O";
+			}
+			else if (checkTail(i, j) == true) {
+				cout << "o";
 			}
 			else if (j == fruitX && i == fruitY) {
 				cout << "F";
@@ -135,14 +147,6 @@ void logic() {
 	default:
 		break;
 	}
-
-	if (x < 0 || x > width - 1) {
-		snake = false;
-	}
-	else if (y < 0 || y > length - 1) {
-		snake = false;
-	}
-
 	if (x == fruitX && y == fruitY) {
 		score++;
 
@@ -156,18 +160,24 @@ void logic() {
 			fruitY = rand() % (length - 1) + 1;
 		}
 
-		tailX[0] = prevX;
-		tailY[0] = prevY;
 		tailX.push_back(tailX[tailX.size() - 1]);
 		tailY.push_back(tailY[tailY.size() - 1]);
 	}
 	if (score > 0) {
-		for (int i = (tailX.size() - 1); i > 0; i--) {
+		tailX[0] = prevX;
+		tailY[0] = prevY;
+		for (int i = (tailX.size() - 1); i > 1; i--) {
 			tailX[i] = tailX[i - 1];
 		}
-		for (int i = (tailY.size() - 1); i > 0; i--) {
+		for (int i = (tailY.size() - 1); i > 1; i--) {
 			tailY[i] = tailY[i - 1];
 		}
+	}
+	if (x < 0 || x > width - 1) {
+		snake = false;
+	}
+	else if (y < 0 || y > length - 1) {
+		snake = false;
 	}
 }
 int main()
@@ -179,6 +189,14 @@ int main()
 		logic();
 		//Sleep(10);
 	}
+	for (int i = 0; i < tailX.size(); i++) {
+		cout << tailX[i] << " ";
+	}
+	cout << endl;
+	for (int i = 0; i < tailY.size(); i++) {
+		cout << tailY[i] << " ";
+	}
+	cout << endl << "X: " << x << endl << "Y: " << y << endl;
 	
 	return 0;
 }
