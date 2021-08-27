@@ -12,7 +12,6 @@ int score;
 const int width = 75;
 const int length = 25;
 int x, y, fruitX, fruitY;
-int prevX, prevY;
 vector <int> tailX;
 vector <int> tailY;
 
@@ -50,17 +49,21 @@ void draw() {
 	cout << endl;
 	for (int i = 0; i < length; i++) {
 		for (int j = 0; j < width; j++) {
+			if (j == x && i == y) {
+				cout << "O";
+			}
+			if (score > 0) {
+				for (int z = tailX.size() - 1; z > 0; z--) {
+					if (j == tailX[z] && i == tailY[z]) {
+						cout << 'o';
+					}
+				}
+			}
 			if (j == 0 || j == (width - 1)) {
 				cout << "*";
 			}
-			else if (j == x && i == y) {
-				cout << "O";
-			}
 			else if (j == fruitX && i == fruitY) {
 				cout << "F";
-			}
-			else if (j == prevX && i == prevY) {
-				cout << "o";
 			}
 			else {
 				cout << " ";
@@ -172,10 +175,7 @@ int main()
 		draw();
 		input();
 		logic();
-	}
-	system("cls");
-	for (int i = 0; i < (tailX.size()-1); i++) {
-		cout << tailX[i] << endl;
+		//Sleep(10);
 	}
 	
 	return 0;
