@@ -12,6 +12,7 @@ int score;
 const int width = 75;
 const int length = 25;
 int x, y, fruitX, fruitY;
+int prevX, prevY;
 vector <int> tailX;
 vector <int> tailY;
 
@@ -25,8 +26,8 @@ void setup() {
 	x = width/2;
 	y = length/2;
 
-	tailX.push_back(x);
-	tailY.push_back(y);
+	tailX.push_back(prevX);
+	tailY.push_back(prevY);
 
 	fruitX = rand() % (width - 1) + 1;
 	fruitY = rand() % (length - 1) + 1;
@@ -112,39 +113,41 @@ void input() {
 }
 
 void logic() {
+	prevX = x;
+	prevY = y;
+
 	switch (dir) {
-		case UP:
-			y--;
-			break;
-		case DOWN:
-			y++;
-			break;
-		case LEFT:
-			x--;
-			break;
-		case RIGHT:
-			x++;
-			break;
-		case STOP:
-			//snake = false;
-			break;
-		default:
-			break;
+	case UP:
+		y--;
+		break;
+	case DOWN:
+		y++;
+		break;
+	case LEFT:
+		x--;
+		break;
+	case RIGHT:
+		x++;
+		break;
+	case STOP:
+		//snake = false;
+		break;
+	default:
+		break;
 	}
 
-	if (x < 0 || x > width-1) {
+	if (x < 0 || x > width - 1) {
 		snake = false;
 	}
-	else if (y < 0 || y > length-1) {
+	else if (y < 0 || y > length - 1) {
 		snake = false;
 	}
 
 	if (x == fruitX && y == fruitY) {
 		score++;
+
 		fruitX = rand() % (width - 1) + 1;
 		fruitY = rand() % (length - 1) + 1;
-		tailX.push_back(tailX[tailX.size()-1]);
-		tailY.push_back(tailY[tailY.size()-1]);
 
 		while (fruitX == x) {
 			fruitX = rand() % (width - 1) + 1;
@@ -152,22 +155,21 @@ void logic() {
 		while (fruitY == y) {
 			fruitY = rand() % (length - 1) + 1;
 		}
-	}
-	
-	tailX[0] = x;
-	tailY[0] = y;
 
+		tailX[0] = prevX;
+		tailY[0] = prevY;
+		tailX.push_back(tailX[tailX.size() - 1]);
+		tailY.push_back(tailY[tailY.size() - 1]);
+	}
 	if (score > 0) {
-		for (int i = (tailX.size()-1); i > 0; i--) {
+		for (int i = (tailX.size() - 1); i > 0; i--) {
 			tailX[i] = tailX[i - 1];
 		}
-		for (int i = (tailY.size()-1); i > 0; i--) {
+		for (int i = (tailY.size() - 1); i > 0; i--) {
 			tailY[i] = tailY[i - 1];
 		}
 	}
-
 }
-
 int main()
 {
 	setup();
