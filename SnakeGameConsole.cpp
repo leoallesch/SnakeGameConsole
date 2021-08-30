@@ -9,10 +9,11 @@ using namespace std;
 bool snake = false;
 int score;
 
-const int width = 75;
-const int length = 25;
+const int width = 60;
+const int length = 20;
 int x, y, fruitX, fruitY;
-int prevX, prevY;
+int nTail;
+
 vector <int> tailX;
 vector <int> tailY;
 
@@ -22,39 +23,25 @@ eDirection dir;
 void setup() {
 	snake = true;
 	score = 0;
+	nTail = 1;
 
 	x = width / 2;
 	y = length / 2;
 
-	tailX.clear();
-	tailY.clear();
-
+	tailX.push_back(x);
+	tailY.push_back(y);
 	tailX.push_back(x);
 	tailY.push_back(y);
 
-	fruitX = rand() % (width - 1) + 1;
-	fruitY = rand() % (length - 1) + 1;
-
+	fruitX = rand() % width;
+	fruitY = rand() % length;
 
 	while (fruitX == x) {
-		fruitX = rand() % (width - 1) + 1;
+		fruitX = rand() % width;
 	}
 	while (fruitY == y) {
-		fruitY = rand() % (length - 1) + 1;
+		fruitY = rand() % length;
 	}
-
-}
-
-bool checkTail(int i, int j) {
-	bool check = false;
-	if (tailX.size() > 1) {
-		for (int z = 1; z < tailX.size(); z++) {
-			if (tailX[z] == i && tailY[z] == j) {
-				check = true;
-			}
-		}
-	}
-	return check;
 }
 
 void draw() {
@@ -72,14 +59,20 @@ void draw() {
 			else if (j == x && i == y) {
 				cout << "O";
 			}
-			else if (checkTail(i, j) == true) {
-				cout << "o";
-			}
 			else if (j == fruitX && i == fruitY) {
 				cout << "F";
 			}
 			else {
-				cout << " ";
+				bool print = false;
+				for (int z = 1; z < nTail; z++) {
+					if (tailX[z] == j && tailY[z] == i) {
+						cout << "o";
+						print = true;
+					}
+				}
+				if (!print) {
+					cout << " ";
+				}
 			}
 		}
 		cout << endl;
@@ -125,8 +118,14 @@ void input() {
 }
 
 void logic() {
-	prevX = x;
-	prevY = y;
+	tailX[0] = x;
+	tailY[0] = y;
+	if (score > 0) {
+		for (int i = nTail - 1; i > 0; i--) {
+			tailX[i] = tailX[i - 1];
+			tailY[i] = tailY[i - 1];
+		}
+	}
 
 	switch (dir) {
 	case UP:
@@ -147,37 +146,36 @@ void logic() {
 	default:
 		break;
 	}
+
 	if (x == fruitX && y == fruitY) {
 		score++;
+		nTail++;
 
-		fruitX = rand() % (width - 1) + 1;
-		fruitY = rand() % (length - 1) + 1;
+		fruitX = rand() % width;
+		fruitY = rand() % length;
 
 		while (fruitX == x) {
-			fruitX = rand() % (width - 1) + 1;
+			fruitX = rand() % width;
 		}
 		while (fruitY == y) {
-			fruitY = rand() % (length - 1) + 1;
+			fruitY = rand() % length;
 		}
 
-		tailX.push_back(tailX[tailX.size() - 1]);
-		tailY.push_back(tailY[tailY.size() - 1]);
+		tailX.push_back(tailX[nTail - 1]);
+		tailY.push_back(tailY[nTail - 1]);
 	}
-	if (score > 0) {
-		tailX[0] = prevX;
-		tailY[0] = prevY;
-		for (int i = (tailX.size() - 1); i > 1; i--) {
-			tailX[i] = tailX[i - 1];
-		}
-		for (int i = (tailY.size() - 1); i > 1; i--) {
-			tailY[i] = tailY[i - 1];
-		}
-	}
+	
 	if (x < 0 || x > width - 1) {
 		snake = false;
 	}
 	else if (y < 0 || y > length - 1) {
 		snake = false;
+	}
+	//snake collision not wokring
+	for (int i = 1; i < nTail; i++) {
+		if (x == tailX[i] && y == tailY[i]) {
+			snake = false;
+		}
 	}
 }
 int main()
@@ -189,15 +187,6 @@ int main()
 		logic();
 		//Sleep(10);
 	}
-	for (int i = 0; i < tailX.size(); i++) {
-		cout << tailX[i] << " ";
-	}
-	cout << endl;
-	for (int i = 0; i < tailY.size(); i++) {
-		cout << tailY[i] << " ";
-	}
-	cout << endl << "X: " << x << endl << "Y: " << y << endl;
-	
 	return 0;
 }
 
