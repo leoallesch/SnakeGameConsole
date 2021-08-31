@@ -11,6 +11,7 @@ int score;
 
 const int width = 60;
 const int length = 20;
+char repeat = 'y';
 int x, y, fruitX, fruitY;
 int nTail;
 
@@ -140,9 +141,6 @@ void logic() {
 	case RIGHT:
 		x++;
 		break;
-	case STOP:
-		//snake = false;
-		break;
 	default:
 		break;
 	}
@@ -171,7 +169,7 @@ void logic() {
 	else if (y < 0 || y > length - 1) {
 		snake = false;
 	}
-	//snake collision not wokring
+
 	for (int i = 1; i < nTail; i++) {
 		if (x == tailX[i] && y == tailY[i]) {
 			snake = false;
@@ -181,12 +179,18 @@ void logic() {
 int main()
 {
 	setup();
-	while (snake == true) {
-		draw();
-		input();
-		logic();
-		//Sleep(10);
+	while (repeat == 'y' || repeat == 'Y') {
+		while (snake == true) {
+			draw();
+			input();
+			logic();
+		}
+		cout << "Would you like to play again (Y/N): ";
+		cin >> repeat;
+		if (repeat == 'y' || repeat == 'Y') {
+			snake = true;
+			setup();
+		}
 	}
 	return 0;
 }
-
